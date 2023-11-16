@@ -13,13 +13,14 @@ const initDb = async (callback) => {
   }
 
   try {
-    const { MONGODB_URI } = require("./db.config"); // Importing variables from the config file
+    const { MONGODB_URI } = require('./db.config'); // Importing variables from the config file
     await mongoose.connect(MONGODB_URI); // Connect to MongoDB using the provided URI
     _db = mongoose.connection; // Store the MongoDB connection instance
-    callback(null, _db); // Execute the provided callback with the connection instance
-    console.log("Db is initialized!");
+    console.log('Db is initialized!');
+    return _db; // Return the connection instance
   } catch (err) {
-    callback(err); // If an error occurs during the connection, execute the callback with the error
+    console.error('Error initializing database:', err);
+    throw err; // Rethrow the error to be caught by the caller
   }
 };
 
