@@ -1,38 +1,33 @@
-// Import necessary packages and modules
-const mongoose = require("mongoose"); // Mongoose for MongoDB object modeling
-const dotenv = require("dotenv"); // Package for handling environment variables
-dotenv.config(); // Load environment variables from .env file
+// db.connection.js
+const mongoose = require('mongoose');
+const { MONGODB_URI } = require('./db.config');
 
-let _db; // Variable to store the MongoDB connection instance
+let _db;
 
-// Function to initialize the database connection
-const initDb = async (callback) => {
+const initDb = async () => {
   if (_db) {
-    console.log("Db is already initialized!");
-    return callback(null, _db); // If the database is already initialized, return the existing connection
+    console.log('Db is already initialized!');
+    return _db;
   }
 
   try {
-    const { MONGODB_URI } = require('./db.config'); // Importing variables from the config file
-    await mongoose.connect(MONGODB_URI); // Connect to MongoDB using the provided URI
-    _db = mongoose.connection; // Store the MongoDB connection instance
+    await mongoose.connect(MONGODB_URI);
+    _db = mongoose.connection;
     console.log('Db is initialized!');
-    return _db; // Return the connection instance
+    return _db;
   } catch (err) {
     console.error('Error initializing database:', err);
-    throw err; // Rethrow the error to be caught by the caller
+    throw err;
   }
 };
 
-// Function to get the existing MongoDB connection instance
 const getDb = () => {
   if (!_db) {
-    throw Error("Db not initialized"); // If the connection is not initialized, throw an error
+    throw Error('Db not initialized');
   }
-  return _db; // Return the existing connection instance
+  return _db;
 };
 
-// Export the functions for external use
 module.exports = {
   initDb,
   getDb,
