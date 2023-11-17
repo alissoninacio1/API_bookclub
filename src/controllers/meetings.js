@@ -70,62 +70,86 @@ const getMeetingDetailsById = async (req, res) => {
 
 
 // Function to create meeting details
-async function createMeetingDetails(meetingData) {
+async function createMeetingDetails(req, res) {
   await initCollection();
 
   try {
-    const db = initDb(); // Get the connection instance using initDb
-    const result = await db.collection('meetingDetails').insertOne(meetingData);
-    return result.insertedId;
+    const db = await initDb();
+
+    const sanitizedMeetingData = {
+      bookClub: req.body.bookClub,
+      host: req.body.host,
+      time: req.body.time,
+      date: req.body.date,
+      dayOfWeek: req.body.dayOfWeek,
+      location: req.body.location,
+      typeOfMeeting: req.body.typeOfMeeting,
+      book: req.body.book,
+    };
+
+    const result = await db.collection('meetingDetails').insertOne(sanitizedMeetingData);
+    res.status(201).json({ insertedId: result.insertedId }); // Indique o sucesso e retorne o ID inserido
   } catch (err) {
     console.error('Error creating meeting details:', err);
-    throw err;
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 }
 
 //-----------------------------------
 
 // Function to update meeting details by ID
-async function updateMeetingDetails(id, updatedMeetingData) {
-  await initCollection();
+const updateMeetingDetails = async (req, res) => {
+  const meetingId = req.params.id;
+  const updatedMeetingData = req.body;
 
   try {
-    const db = initDb(); // Get the connection instance using initDb
-    if (!ObjectId.isValid(id)) {
-      return false;
+    const db = await initDb();
+    if (!ObjectId.isValid(meetingId)) {
+      return res.status(400).json({ message: 'Invalid meeting ID' });
     }
 
-    const objectId = new ObjectId(id);
+    const objectId = new ObjectId(meetingId);
     const result = await db.collection('meetingDetails').updateOne(
       { _id: objectId },
       { $set: updatedMeetingData }
     );
 
-    return result.modifiedCount > 0;
-  } catch (err) {
-    console.error('Error updating meeting details:', err);
-    throw err;
-  }
-}
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'Meeting not found' });
+    }
 
+    res.status(200).json({ message: 'Meeting details updated successfully' });
+  } catch (error) {
+    console.error('Error updating meeting details:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 //-----------------------------------
 
 // Function to delete meeting details by ID
-async function deleteMeetingDetails(id) {
-  await initCollection();
+const deleteMeetingDetails = async (req, res) => {
+  const meetingId = req.params.id;
 
   try {
-    const db = initDb(); // Get the connection instance using initDb
-    const objectId = new ObjectId(id);
+    const db = await initDb();
+    if (!ObjectId.isValid(meetingId)) {
+      return res.status(400).json({ message: 'Invalid meeting ID' });
+    }
+
+    const objectId = new ObjectId(meetingId);
     const result = await db.collection('meetingDetails').deleteOne({ _id: objectId });
 
-    return result.deletedCount > 0;
-  } catch (err) {
-    console.error('Error deleting meeting details:', err);
-    throw err;
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Meeting not found' });
+    }
+
+    res.status(200).json({ message: 'Meeting details deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting meeting details:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-}
+};
 
 module.exports = {
   getAllMeetingDetails,

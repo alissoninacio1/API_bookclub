@@ -5,11 +5,11 @@ GET http://localhost:5000/meetings
 GET http://localhost:5000/meetings/6556e6db9146d56fa5a82d57
 
 ### Create a new meeting
-POST http://localhost:5000/6556e6db9146d56fa5a82d57
+POST http://localhost:5000/meetings
 Content-Type: application/json
 
 {
-  "bookClub": "CLUB_ID",
+  "bookClub": "CLUB_ID-test-2",
   "host": "Host Name",
   "time": "14:00",
   "date": "2023-01-01",
@@ -20,11 +20,11 @@ Content-Type: application/json
 }
 
 ### Update a meeting by ID
-PUT http://localhost:5000/meetings/MEETING_ID
+PUT http://localhost:5000/meetings/6557de27192be7ae55d9853e
 Content-Type: application/json
 
 {
-  "bookClub": "CLUB_ID",
+  "bookClub": "CLUB_ID - name changed",
   "host": "New Host Name",
   "time": "15:00",
   "date": "2023-02-01",
@@ -35,4 +35,4 @@ Content-Type: application/json
 }
 
 ### Delete a meeting by ID
-DELETE http://localhost:5000/api/meetings/MEETING_ID
+DELETE http://localhost:5000/meetings/6557de27192be7ae55d9853e
