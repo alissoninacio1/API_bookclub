@@ -1,44 +1,20 @@
-const { getDb } = require('..//database/db.connection');
 const { ObjectId } = require('mongodb');
-const MeetingDetails = require('../models/meetings.model');
+const { initDb } = require('../database/db.connection');
 
-// Function to create meeting details
-const createMeetingDetails = async (req, res) => {
+const initCollection = async () => {
   try {
-    const { bookClub, host, time, date, dayOfWeek, location, typeOfMeeting, book } = req.body;
-
-    if (!bookClub || !host || !time || !date || !dayOfWeek || !location || !typeOfMeeting) {
-      return res.status(400).json({ error: 'All fields are mandatory.' });
-    }
-
-    const db = getDb();
-    const meetingDetailsCollection = db.collection('meetingDetails');
-
-    const newMeetingDetails = new MeetingDetails({
-      bookClub,
-      host,
-      time,
-      date,
-      dayOfWeek,
-      location,
-      typeOfMeeting,
-      book,
-    });
-
-    const savedMeetingDetails = await newMeetingDetails.save();
-
-    res.status(201).json(savedMeetingDetails);
+    const db = await initDb();
+    console.log('Collection initialized successfully.');
+    return db; // Return the database instance
   } catch (error) {
-    console.error('Error creating meeting details:', error);
-    res.status(500).send('Internal Server Error');
+    console.error('Error initializing collection:', error);
   }
 };
 
-// Function to get all meeting details
 const getAllMeetingDetails = async (req, res) => {
   try {
-    const meetingDetails = await MeetingDetails.find();
-
+    const db = await initCollection();
+    const meetingDetails = await db.collection('meetingDetails').find().toArray();
     res.json(meetingDetails);
   } catch (error) {
     console.error('Error getting meeting details:', error);
@@ -47,71 +23,81 @@ const getAllMeetingDetails = async (req, res) => {
 };
 
 // Function to get meeting details by ID
-const getMeetingDetailsById = async (req, res) => {
-  try {
-    const meetingDetails = await MeetingDetails.findById(req.params.id);
+async function getMeetingDetailsById(id) {
+  await initCollection();
 
-    if (!meetingDetails) {
-      return res.status(404).json({ error: 'Meeting details not found.' });
+  try {
+    if (!ObjectId.isValid(id)) {
+      return null;
     }
 
-    res.json(meetingDetails);
-  } catch (error) {
-    console.error('Error getting meeting details by ID:', error);
-    res.status(500).send('Internal Server Error');
+    const objectId = new ObjectId(id);
+    const meetingDetails = await meetingDetailsCollection.findOne({ _id: objectId });
+
+    return meetingDetails;
+  } catch (err) {
+    console.error('Error fetching meeting details by ID:', err);
+    throw err;
   }
-};
+}
+
+// Function to create meeting details
+async function createMeetingDetails(meetingData) {
+  await initCollection();
+
+  try {
+    const db = initDb(); // Get the connection instance using initDb
+    const result = await db.collection('meetingDetails').insertOne(meetingData);
+    return result.insertedId;
+  } catch (err) {
+    console.error('Error creating meeting details:', err);
+    throw err;
+  }
+}
 
 // Function to update meeting details by ID
-const updateMeetingDetails = async (req, res) => {
-  try {
-    const { bookClub, host, time, date, dayOfWeek, location, typeOfMeeting, book } = req.body;
+async function updateMeetingDetails(id, updatedMeetingData) {
+  await initCollection();
 
-    if (!bookClub || !host || !time || !date || !dayOfWeek || !location || !typeOfMeeting) {
-      return res.status(400).json({ error: 'All fields are mandatory.' });
+  try {
+    const db = initDb(); // Get the connection instance using initDb
+    if (!ObjectId.isValid(id)) {
+      return false;
     }
 
-    const db = getDb();
-    const meetingDetailsCollection = db.collection('meetingDetails');
-
-    const updatedMeetingDetails = await MeetingDetails.findByIdAndUpdate(
-      req.params.id,
-      {
-        bookClub,
-        host,
-        time,
-        date,
-        dayOfWeek,
-        location,
-        typeOfMeeting,
-        book,
-      },
-      { new: true }
+    const objectId = new ObjectId(id);
+    const result = await db.collection('meetingDetails').updateOne(
+      { _id: objectId },
+      { $set: updatedMeetingData }
     );
 
-    res.json(updatedMeetingDetails);
-  } catch (error) {
-    console.error('Error updating meeting details:', error);
-    res.status(500).send('Internal Server Error');
+    return result.modifiedCount > 0;
+  } catch (err) {
+    console.error('Error updating meeting details:', err);
+    throw err;
   }
-};
+}
 
 // Function to delete meeting details by ID
-const deleteMeetingDetails = async (req, res) => {
-  try {
-    await MeetingDetails.findByIdAndDelete(req.params.id);
+async function deleteMeetingDetails(id) {
+  await initCollection();
 
-    res.json({ message: 'Meeting details deleted successfully.' });
-  } catch (error) {
-    console.error('Error deleting meeting details:', error);
-    res.status(500).send('Internal Server Error');
+  try {
+    const db = initDb(); // Get the connection instance using initDb
+    const objectId = new ObjectId(id);
+    const result = await db.collection('meetingDetails').deleteOne({ _id: objectId });
+
+    return result.deletedCount > 0;
+  } catch (err) {
+    console.error('Error deleting meeting details:', err);
+    throw err;
   }
-};
+}
 
 module.exports = {
-  createMeetingDetails,
   getAllMeetingDetails,
   getMeetingDetailsById,
+  createMeetingDetails,
   updateMeetingDetails,
   deleteMeetingDetails,
 };

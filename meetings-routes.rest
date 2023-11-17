@@ -1,5 +1,11 @@
+### Get all meetings
+GET http://localhost:5000/meetings
+
+### Get a specific meeting by ID
+GET http://localhost:5000/meetings/6556e7bd9146d56fa5a82d5b
+
 ### Create a new meeting
-POST http://localhost:5000/api/meetings
+POST http://localhost:5000/6556e7bd9146d56fa5a82d5b
 Content-Type: application/json
 
 {
@@ -13,14 +19,8 @@ Content-Type: application/json
   "book": "BOOK_ID"
 }
 
-### Get all meetings
-GET http://localhost:5000/api/meetings
-
-### Get a specific meeting by ID
-GET http://localhost:5000/api/meetings/MEETING_ID
-
 ### Update a meeting by ID
-PUT http://localhost:5000/api/meetings/MEETING_ID
+PUT http://localhost:5000/meetings/MEETING_ID
 Content-Type: application/json
 
 {

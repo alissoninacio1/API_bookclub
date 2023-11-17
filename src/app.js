@@ -11,9 +11,11 @@ app.use(cors());
 
 // Middleware para análise do corpo da solicitação
 app.use(bodyParser.json());
+app.use(express.json());
 
-// Rotas
-app.use('/api/meetings', meetingsRoutes);
+// Routes
+app.use('/', meetingsRoutes);
+app.use('/meetings', meetingsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
