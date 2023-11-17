@@ -1,5 +1,5 @@
-
 const mongodb = require("./database/db.connection");
+const Book = require("../models/books.model.js");
 const ObjectId = require("mongodb").ObjectId;
 
 //get all books from books collection
@@ -67,18 +67,28 @@ const findBookByAuthor = async (req, res) => {
   };
 
 const addBook = async (req, res) => {
-    console.log(req.params.id);
-    const book = {
-      title: req.body.title,
-      author: req.body.author,
-      description: req.body.description,
-      genre: req.body.genre,
-      category: req.body.category,
-      pages: req.body.pages,
-      year: req.body.year,
-      createdAt: req.body.createdAt,
-      updatedAt: req.body.updatedAt
+  try {
+    const bookData = req.body;
+    const newBook = new Book(bookData);
+    await newBook.save();
+
+  res.status(201).json(newBook); // Respond with the created Book
+    } catch (error) {
+        res.status(500).json({ error: error.message }); // Handle errors and respond with an error status
     }
+};
+    // console.log(req.params.id);
+    // const book = {
+    //   title: req.body.title,
+    //   author: req.body.author,
+    //   description: req.body.description,
+    //   genre: req.body.genre,
+    //   category: req.body.category,
+    //   pages: req.body.pages,
+    //   year: req.body.year,
+    //   createdAt: req.body.createdAt,
+    //   updatedAt: req.body.updatedAt
+    // }
   const response = await mongodb
     .getDb()
     .db("bookclub")
@@ -91,8 +101,7 @@ const addBook = async (req, res) => {
     res
       .status(500)
       .json(response.error || "Errors occured while adding the book");
-  }
-};  
+};
 
 const updateBook = async (req, res) => {
     const bookId = new ObjectId(req.params);
