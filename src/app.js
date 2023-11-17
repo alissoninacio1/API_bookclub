@@ -5,6 +5,7 @@ const app = express();
 const PORT = 5000;
 
 //importing routes
+const booksRoutes = require('./routes/books');
 const meetingsRoutes = require('./routes/meetings');
 const membersRoutes = require('./routes/members');
 
@@ -12,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 
-
+app.use('/books', booksRoutes); 
 app.use('/meetings', meetingsRoutes);
 app.use('/members', membersRoutes);
 
