@@ -4,17 +4,25 @@ const { initDb } = require('../database/db.connection');
 const initCollection = async () => {
   try {
     const db = await initDb();
+    if (!db) {
+      throw new Error('Database connection not available.');
+    }
+
+    const collection = db.collection('meetingDetails');
     console.log('Collection initialized successfully.');
-    return db; // Return the database instance
+    return collection;
   } catch (error) {
     console.error('Error initializing collection:', error);
+    throw error;
   }
 };
 
+//-----------------------------------
+
 const getAllMeetingDetails = async (req, res) => {
   try {
-    const db = await initCollection();
-    const meetingDetails = await db.collection('meetingDetails').find().toArray();
+    const collection = await initCollection();
+    const meetingDetails = await collection.find().toArray();
     res.json(meetingDetails);
   } catch (error) {
     console.error('Error getting meeting details:', error);
@@ -22,24 +30,44 @@ const getAllMeetingDetails = async (req, res) => {
   }
 };
 
+//-----------------------------------
+
+// Function to get the database instance
+const getDb = async () => {
+  try {
+    const db = await initDb();
+    return db;
+  } catch (error) {
+    console.error('Error getting database:', error);
+    throw error;
+  }
+};
+
 // Function to get meeting details by ID
-async function getMeetingDetailsById(id) {
-  await initCollection();
+const getMeetingDetailsById = async (req, res) => {
+  const meetingId = req.params.id;
 
   try {
-    if (!ObjectId.isValid(id)) {
-      return null;
+    const db = await getDb();
+
+    // Ensure the collection is retrieved from the database
+    const collection = db.collection('meetingDetails');
+    
+    const meeting = await collection.findOne({ _id: new ObjectId(meetingId) }); // Corrigido aqui
+
+    if (!meeting) {
+      return res.status(404).json({ message: 'Meeting not found' });
     }
 
-    const objectId = new ObjectId(id);
-    const meetingDetails = await meetingDetailsCollection.findOne({ _id: objectId });
-
-    return meetingDetails;
-  } catch (err) {
-    console.error('Error fetching meeting details by ID:', err);
-    throw err;
+    res.status(200).json(meeting);
+  } catch (error) {
+    console.error('Error fetching meeting details by ID:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-}
+};
+
+//-----------------------------------
+
 
 // Function to create meeting details
 async function createMeetingDetails(meetingData) {
@@ -54,6 +82,8 @@ async function createMeetingDetails(meetingData) {
     throw err;
   }
 }
+
+//-----------------------------------
 
 // Function to update meeting details by ID
 async function updateMeetingDetails(id, updatedMeetingData) {
@@ -77,6 +107,9 @@ async function updateMeetingDetails(id, updatedMeetingData) {
     throw err;
   }
 }
+
+
+//-----------------------------------
 
 // Function to delete meeting details by ID
 async function deleteMeetingDetails(id) {
