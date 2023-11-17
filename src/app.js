@@ -13,14 +13,20 @@ app.use(cors());
 // Middleware to initialize the database connection before handling requests
 //only for test
 app.use(async (req, res, next) => {
-    try {
-      await db.initDb();
-      next();
-    } catch (error) {
-      console.error('Error initializing database:', error);
-      res.status(500).send('Internal Server Error');
-    }
-  });
+  try {
+    await db.initDb((err, db) => {
+      if (err) {
+        console.error('Error initializing database:', err);
+        res.status(500).send('Internal Server Error');
+      } else {
+        next();
+      }
+    });
+  } catch (error) {
+    console.error('Error initializing database:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 
 //only for test 
