@@ -9,7 +9,7 @@ POST http://localhost:5000/meetings
 Content-Type: application/json
 
 {
-  "bookClub": "CLUB_ID-test-2",
+  "bookClub": "CLUB_ID-test-3",
   "host": "Host Name",
   "time": "14:00",
   "date": "2023-01-01",
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ### Update a meeting by ID
-PUT http://localhost:5000/meetings/6557de27192be7ae55d9853e
+PUT http://localhost:5000/meetings/6557eb02f9c847c9d47bbe58
 Content-Type: application/json
 
 {
@@ -35,4 +35,4 @@ Content-Type: application/json
 }
 
 ### Delete a meeting by ID
-DELETE http://localhost:5000/meetings/6557de27192be7ae55d9853e
+DELETE http://localhost:5000/meetings/6557eb02f9c847c9d47bbe58
