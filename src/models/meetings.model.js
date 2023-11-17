@@ -53,6 +53,7 @@ meetingSchema.pre("save", function (next) {
     next();
 });
 
-const Meeting = mongoose.model("Meetng", meetingSchema);
+const Meeting = mongoose.model("Meeting", meetingSchema);
+
 
 module.exports = Meeting;
