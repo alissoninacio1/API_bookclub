@@ -1,0 +1,38 @@
+### Create a new meeting
+POST http://localhost:5000/api/meetings
+Content-Type: application/json
+
+{
+  "bookClub": "CLUB_ID",
+  "host": "Host Name",
+  "time": "14:00",
+  "date": "2023-01-01",
+  "dayOfWeek": "Monday",
+  "location": "Meeting Location",
+  "typeOfMeeting": "online",
+  "book": "BOOK_ID"
+}
+
+### Get all meetings
+GET http://localhost:5000/api/meetings
+
+### Get a specific meeting by ID
+GET http://localhost:5000/api/meetings/MEETING_ID
+
+### Update a meeting by ID
+PUT http://localhost:5000/api/meetings/MEETING_ID
+Content-Type: application/json
+
+{
+  "bookClub": "CLUB_ID",
+  "host": "New Host Name",
+  "time": "15:00",
+  "date": "2023-02-01",
+  "dayOfWeek": "Tuesday",
+  "location": "New Meeting Location",
+  "typeOfMeeting": "in-person",
+  "book": "NEW_BOOK_ID"
+}
+
+### Delete a meeting by ID
+DELETE http://localhost:5000/api/meetings/MEETING_ID

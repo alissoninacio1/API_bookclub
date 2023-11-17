@@ -3,35 +3,22 @@ const cors = require('cors');
 const app = express();
 const PORT = 5000;
 
-const db  = require('./database/db.connection')
+const bodyParser = require('body-parser');
+const meetingsRoutes = require('./routes/meetings'); 
 
 app.use(cors());
 
 
 
 
-// Middleware to initialize the database connection before handling requests
-//only for test
-app.use(async (req, res, next) => {
-  try {
-    await db.initDb((err, db) => {
-      if (err) {
-        console.error('Error initializing database:', err);
-        res.status(500).send('Internal Server Error');
-      } else {
-        next();
-      }
-    });
-  } catch (error) {
-    console.error('Error initializing database:', error);
-    res.status(500).send('Internal Server Error');
-  }
+// Middleware para análise do corpo da solicitação
+app.use(bodyParser.json());
+
+// Rotas
+app.use('/api/meetings', meetingsRoutes);
+
+
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-
-//only for test 
-app.get('/', (req, res) => {
-    res.send("hello world!");
-});
-
-app.listen(PORT);
