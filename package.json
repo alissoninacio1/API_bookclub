@@ -4,7 +4,8 @@
   "description": "BYU-Idaho Fall 2023 - Web Services",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "swagger": "node ./swagger.js"
   },
   "repository": {
     "type": "git",
@@ -18,13 +19,16 @@
   },
   "homepage": "https://github.com/EmToHat/bookclub_API#readme",
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "swagger-autogen": "^2.23.7"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "mongodb": "^6.2.0",
-    "mongoose": "^8.0.0"
+    "mongoose": "^8.0.0",
+    "swagger": "^0.0.1",
+    "swagger-ui-express": "^5.0.0"
   }
 }

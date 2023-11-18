@@ -4,6 +4,9 @@ const cors = require('cors');
 const app = express();
 const PORT = 5000;
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("../swagger-output.json");
+
 //importing routes
 const booksRoutes = require('./routes/books');
 const meetingsRoutes = require('./routes/meetings');
@@ -11,6 +14,9 @@ const membersRoutes = require('./routes/members');
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api-docs", swaggerUi.serve)
+  .use("/api-docs", swaggerUi.setup(swaggerDocument))
 
 
 app.use('/books', booksRoutes); 

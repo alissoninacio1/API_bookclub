@@ -14,7 +14,7 @@ Content-Type: application/json
     "author": "Jane Austen",
     "description": "Elizabeth Bennet learns about the repercussions of hasty judgments and comes to appreciate the difference between superficial goodness and actual goodness.",
     "genre": "Fiction",
-    "category": "Adult",
+    "category": "Adults",
     "pages": "350",
     "year": "1813",
     "createdAt": "11-16-2023",
