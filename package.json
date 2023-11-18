@@ -2,8 +2,9 @@
   "name": "bookclub_api",
   "version": "1.0.0",
   "description": "BYU-Idaho Fall 2023 - Web Services",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "dev": "nodemon src/app.js",
     "swagger": "node ./swagger.js"
   },
