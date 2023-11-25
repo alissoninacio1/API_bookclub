@@ -1,10 +1,14 @@
 // members.js
 const { ObjectId } = require('mongodb');
-const { getDb } = require('../database/db.connection');
+const { getDb,initDb } = require('../database/db.connection');
 
 // Function to get all members
 const getAllMembers = async (req, res) => {
   try {
+    const dbc = await initDb();
+    if (!dbc) {
+      throw new Error('Database connection not available.');
+    }
     const db = getDb();
     const members = await db.collection('members').find().toArray();
     res.json(members);
