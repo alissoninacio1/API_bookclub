@@ -5,8 +5,8 @@ const app = express();
 const PORT = 5000;
 
 //the code below will be used for oauth
-// const dotenv = require('dotenv');
-// dotenv.config();
+const dotenv = require('dotenv');
+dotenv.config();
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("../swagger-output.json");
@@ -27,7 +27,28 @@ app.use("/api-docs", swaggerUi.serve)
 
 
 //---oauth code ---
+const { auth } = require("express-openid-connect");
 
+
+//Oauth
+
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.SECRET,
+  baseURL: process.env.BASEURL,
+  clientID: process.env.CLIENTID,
+  issuerBaseURL: process.env.ISSUER,
+};
+
+// auth router attaches /login, /logout, and /callback routes to the baseURL
+app.use(auth(config));
+
+
+// req.isAuthenticated is provided from the auth router
+app.get('/', (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+});
 //end oauth code
 
 app.use('/books', booksRoutes); 
