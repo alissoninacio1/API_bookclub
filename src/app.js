@@ -26,35 +26,32 @@ app.use("/api-docs", swaggerUi.serve)
   .use("/api-docs", swaggerUi.setup(swaggerDocument))
 
 
-//---oauth code ---
-const { auth, requiresAuth } = require("express-openid-connect");
+// //---oauth code ---
+// const { auth, requiresAuth } = require("express-openid-connect");
 
 
-//Oauth
+// //Oauth
 
-const config = {
-  authRequired: true,
-  auth0Logout: true,
-  secret: process.env.SECRET,
-  baseURL: process.env.BASEURL,
-  clientID: process.env.CLIENTID,
-  issuerBaseURL: process.env.ISSUER,
-};
+// const config = {
+//   authRequired: true,
+//   auth0Logout: true,
+//   secret: process.env.SECRET,
+//   baseURL: process.env.BASEURL,
+//   clientID: process.env.CLIENTID,
+//   issuerBaseURL: process.env.ISSUER,
+// };
 
-// auth router attaches /login, /logout, and /callback routes to the baseURL
-app.use(auth(config));
+// // The /profile route will show the user profile as JSON
+// app.get('/profile', requiresAuth(), (req, res) => {
+//   res.send(JSON.stringify(req.oidc.user, null, 2));
+// });
+// //end oauth code
+
+// // auth router attaches /login, /logout, and /callback routes to the baseURL
+// app.use(auth(config));
 
 
-// req.isAuthenticated is provided from the auth router
-app.get('/', (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-});
 
-// The /profile route will show the user profile as JSON
-app.get('/profile', requiresAuth(), (req, res) => {
-  res.send(JSON.stringify(req.oidc.user, null, 2));
-});
-//end oauth code
 
 app.use('/books', booksRoutes); 
 app.use('/clubs', clubsRoutes);

@@ -5,6 +5,11 @@
     "description": "Web Services Team 2 - Alisson Inacio, Emilee Hatch, & Anna Varner",
     "version": "1.0.0"
   },
+  "servers": [
+    {
+      "url": "http://localhost:5000"  
+    }
+  ],
   "tags": [
     {
       "name": "Books",
