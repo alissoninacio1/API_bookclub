@@ -7,7 +7,7 @@ const booksRouter = require("../src/routes/books");
 
 const app = express();
 
-jest.mock("../../controllers/books", () => ({
+jest.mock("../src/controllers/books", () => ({
   getAllBooks: jest.fn(),
   findBookById: jest.fn(),
   findBookByTitle: jest.fn(),
